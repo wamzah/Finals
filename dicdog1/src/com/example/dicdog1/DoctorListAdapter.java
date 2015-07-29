@@ -1,8 +1,20 @@
 package com.example.dicdog1;
 
 import java.util.List;
+
+import com.parse.FindCallback;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,20 +44,38 @@ public class DoctorListAdapter extends ArrayAdapter<String> {
         View rowView = inflater.inflate(R.layout.activity_doctors_list, parent, false);
 		TextView nameView = (TextView) rowView.findViewById(R.id.name);
 		TextView textView = (TextView) rowView.findViewById(R.id.label);	
-		ImageView imageView = (ImageView) rowView.findViewById(R.id.logo);
-		
-		nameView.setText(name.get(position));
+		final ImageView imageView = (ImageView) rowView.findViewById(R.id.logo);		
+		nameView.setText("Dr. "+name.get(position));
 		textView.setText(values.get(position)); 
-		String s = gender;		
-		if(s.equals("female"))
-		{
-			imageView.setImageResource(R.drawable.doctorold);
-		}
-		else if(s.equals("male"))
-		{
-			imageView.setImageResource(R.drawable.doctorold);
-		}		
- 
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("DoctorsTable");
+		query.whereEqualTo("Name", name.get(position));
+		query.findInBackground(new FindCallback<ParseObject>() {
+			@Override
+			public void done(List<ParseObject> la,
+					com.parse.ParseException e) {
+				// TODO Auto-generated method stub
+				 if(la!=null){
+					 //Toast.makeText(getApplicationContext(),"Name: "+la.get(0).getString("Name"), Toast.LENGTH_LONG).show();					
+						ParseFile fileObject = (ParseFile) la.get(0).get("Images");
+						fileObject.getDataInBackground(new GetDataCallback() {									
+									@Override
+									public void done(byte[] arg0,
+											ParseException arg1) {
+										// TODO Auto-generated method stub
+										if (arg1 == null) {			
+											Bitmap bmp = BitmapFactory.decodeByteArray(arg0, 0,arg0.length);
+                                            BitmapDrawable b=new BitmapDrawable(bmp);
+											imageView.setBackgroundDrawable(b);    																					
+										}
+										
+									}
+						
+					
+                         });}
+                  else{ }				
+			}
+		});			
 		return rowView;
 	}
 }

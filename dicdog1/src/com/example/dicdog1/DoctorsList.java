@@ -33,10 +33,10 @@ private static String selectedValue;
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_doctor_list);
 		jobList =new ArrayList<String>();
-		 nameList =new ArrayList<String>();
-		 genderList =new ArrayList<String>(); 
-		 //genderList1 =new ArrayList<String>();
-		 List<Doctor> doctorList =new ArrayList<Doctor>();
+		nameList =new ArrayList<String>();
+		genderList =new ArrayList<String>(); 
+		//genderList1 =new ArrayList<String>();
+		List<Doctor> doctorList =new ArrayList<Doctor>();
 		Intent intent=getIntent();
 		String speciality=intent.getExtras().getString("speciality");
  		String gender=intent.getExtras().getString("gender");
@@ -55,8 +55,8 @@ private static String selectedValue;
 					com.parse.ParseException e) {
 				
 				// TODO Auto-generated method stub
-				 if(la!=null){
-					 
+				 if(la!=null)
+				 {					 
 					 for(int i=0;i<la.size()+1;i++)
 						{
 						 if(i==la.size())
@@ -84,7 +84,8 @@ private static String selectedValue;
 						 check(s1,s,s2);
 					// Toast.makeText(getApplicationContext(),"Hello " + s, Toast.LENGTH_LONG).show();
 			//		     genderList1.add(s);		
-						 }};
+						 }
+						 };
 						
 						//Toast.makeText(getApplicationContext(),"Hello " + genderList1.get(0), Toast.LENGTH_LONG).show();
 					
@@ -100,8 +101,8 @@ private static String selectedValue;
  		{
  			
  			Intent intent2=new Intent(DoctorsList.this,SelectedDoctor.class);
-			 intent2.putExtra("doctor", name);
-		     startActivity(intent2);	
+			intent2.putExtra("doctor", name);
+		    startActivity(intent2);	
 		     
 /* 			ParseQuery<ParseObject> query = ParseQuery.getQuery("DoctorsTable");			
 			query.whereEqualTo("Name", name);

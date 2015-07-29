@@ -3,8 +3,14 @@ package com.example.dicdog1;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -22,7 +28,7 @@ public class Landingpage extends ActionBarActivity {
 private static DatabaseHandler db;
 private static ProgressBar  mProgressBar;
 public static List<String> hospital_list;
-protected static final int TIMER_RUNTIME = 10000; // in ms —> 10s
+protected static final int TIMER_RUNTIME = 5000; // in ms —> 5s
 @SuppressWarnings("unused")
 private static ParseObject doctordata;
 private static TextView text;
@@ -30,48 +36,63 @@ protected boolean mbActive;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_landingpage);
-		Parse.enableLocalDatastore(this);
-        Parse.initialize(this,"bWBg10fbvRRs1E6DLjSTQNVoctDfp5UU7oZXNaNx","22qCsWfIKoHxXRjaIe0afLuINwqCGj0HgSPomDym" );
-        //ParseUser.enableAutomaticUser();
-        //ParseACL defaultACL = new ParseACL();
-        //defaultACL.setPublicReadAccess(true);
-        //ParseACL.setDefaultACL(defaultACL, true);
-        
 		ActionBar actionbar=getSupportActionBar();
 		actionbar.hide();
-		db=new DatabaseHandler(this);
-		text=(TextView) findViewById(R.id.textView1);
-		//text.setLayoutParams();
-	     mProgressBar = (ProgressBar)findViewById(R.id.progress);
-//a complete method for loading and opening the page
-	     final Thread timerThread = new Thread() {
-	               @Override
-	               public void run() {
-	            	 doWork();
-	                   mbActive = true;
-	                   try {
-	                       int waited = 0;
-	                       while(mbActive && (waited < TIMER_RUNTIME)) {
-	                           sleep(200);
-	                           if(mbActive) {
-	                               waited += 200;
-	                               updateProgress(waited);
-	                           }
-	                       }
-	               } catch(InterruptedException e) {
-	                   // do nothing
-	               } finally {
-	                   onContinue();
-	               }
-	             }
-	          };
-	          timerThread.start();
+		setContentView(R.layout.activity_landingpage);
+		if(!isNetworkAvailable())
+		{
+			Toast.makeText(getApplicationContext(),"Network Problem.Please Check Your Internet Connection & try again", Toast.LENGTH_LONG).show();
+		  	showSettingsAlert("Internet");		  	
+		 /* while(true)
+		  	{
+		  		if(isNetworkAvailable())
+		  		{
+		  			break;
+		  		}
+		  	}*/
+		  	
+		}
+		if(isNetworkAvailable())
+		{
+			Parse.enableLocalDatastore(this);
+	        Parse.initialize(this,"bWBg10fbvRRs1E6DLjSTQNVoctDfp5UU7oZXNaNx","22qCsWfIKoHxXRjaIe0afLuINwqCGj0HgSPomDym" );
+	        //ParseUser.enableAutomaticUser();
+	        //ParseACL defaultACL = new ParseACL();
+	        //defaultACL.setPublicReadAccess(true);
+	        //ParseACL.setDefaultACL(defaultACL, true);
+	        
+			
+			db=new DatabaseHandler(this);
+			text=(TextView) findViewById(R.id.textView1);
+			//text.setLayoutParams();
+		     mProgressBar = (ProgressBar)findViewById(R.id.progress);
+		     //	a complete method for loading and opening the page
+		     final Thread timerThread = new Thread() {
+		               @Override
+		               public void run() {
+		            	 doWork();
+		                   mbActive = true;
+		                   try {
+		                       int waited = 0;
+		                       while(mbActive && (waited < TIMER_RUNTIME)) {
+		                           sleep(200);
+		                           if(mbActive) {
+		                               waited += 200;
+		                               updateProgress(waited);
+		                           }
+		                       }
+		               } catch(InterruptedException e) {
+		                   // do nothing
+		               } finally {
+		                   onContinue();
+		               }
+		             }
+		          };
+		          timerThread.start();
 	        }
-	        @Override
-	        public void onDestroy() {
-	            super.onDestroy();
-	        }
+	}
+		
+	       
 	        public void updateProgress(final int timePassed) {
 	            if(null != mProgressBar) {
 	                // Ignore rounding error here
@@ -79,6 +100,7 @@ protected boolean mbActive;
 	                mProgressBar.setProgress(progress);
 	            }
 	        }
+
 
 	     public void onContinue() {
 	          // perform any final actions here
@@ -107,6 +129,12 @@ protected boolean mbActive;
 		}
 		return super.onOptionsItemSelected(item);
 	}*/
+	     private boolean isNetworkAvailable() {
+	 	    ConnectivityManager connectivityManager 
+	 	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	 	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	 	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	 	}
 	//loading database data
 	public void doWork()
 	{
@@ -130,7 +158,8 @@ protected boolean mbActive;
 							 
 						 }};}
                   else{//handle the error}
-                	  Toast.makeText(getApplicationContext(),"hello yes", Toast.LENGTH_LONG).show();
+                	  Toast.makeText(getApplicationContext(),"Network Problem.Please Check Your Internet Connection", Toast.LENGTH_LONG).show();
+                	  showSettingsAlert("Internet");
                             }
 				
 			}
@@ -138,7 +167,8 @@ protected boolean mbActive;
 		
 		
 			
-		
+
+
 		
 		db.getWritableDatabase();
         db.deleteTable(db.getWritableDatabase());                
@@ -157,4 +187,25 @@ protected boolean mbActive;
         db.close();        
         
 	}
+	 public void showSettingsAlert(String provider) {
+		
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(Landingpage.this);
+				alertDialog.setTitle(provider + " SETTINGS");
+				alertDialog.setMessage(provider + " is not enabled! Want to go to settings menu?");
+				alertDialog.setPositiveButton("Settings",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+						Landingpage.this.startActivity(intent);			
+						finish();
+					}});
+	
+				alertDialog.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}});
+				alertDialog.show();
+			
+		 
+		}   
 }

@@ -29,14 +29,13 @@ private static List<Doctor> doctorList;
 private static String searchJob;
 private static String searchGender;
 private static String searchName;
-private static Spinner spinnerDoctor;
-//private static Spinner spinnerHospital;
+private static Spinner spinnerHospital;
 private static Spinner genderspinner;
 private static Button button2;
 private static Intent intent;
 private static String check;
 private static String searchHospital;
-private static AutoCompleteTextView textView;
+private static AutoCompleteTextView doctorName;
 List<String> jobspec;
 List<String> names;
 	@Override
@@ -48,35 +47,16 @@ List<String> names;
 		//overridePendingTransition(R.layout.rotate_out, R.layout.rotatein);
 		
 		check="";
-		//adding first job spinner
 		jobspec=new ArrayList<String>();
-		names=new ArrayList<String>();
-		
-		/*DatabaseHandler db=new DatabaseHandler(this);
-        db.getReadableDatabase();
-        jobspec=db.getJobList();        
-        names=db.getNamesList();
-        db.close();
-        if(jobspec.contains("All"))
-        {
-        	jobspec.remove("All");
-        }*/
-		//Spinner spinner = (Spinner) findViewById(R.id.spinner1);
-		jobspec=Landingpage.hospital_list;
-		
-		
-		//search operation: calling all the spinners 
-		spinnerDoctor=(Spinner)findViewById(R.id.spinner_hospital);
-		//spinnerHospital=(Spinner)findViewById(R.id.Spinner01);
-		//spinnerGender=(Spinner)findViewById(R.id.Spinner02);
+		names=new ArrayList<String>();			
+		jobspec=Landingpage.hospital_list;				 		
 		//initializing doctorlist,intent
 		doctorList=new ArrayList<Doctor>();
 		intent=new Intent(Search_doctors.this,DoctorsList.class);
+		doctorName = (AutoCompleteTextView) findViewById(R.id.doctorNameautoComplete);
 		//search button
-		button2=(Button)findViewById(R.id.buttonsearchdoc);
-		textView = (AutoCompleteTextView) findViewById(R.id.doctorNameautoComplete);
-		button2.setOnClickListener(new View.OnClickListener() {
-			
+		button2=(Button)findViewById(R.id.buttonsearchdoc);		
+		button2.setOnClickListener(new View.OnClickListener() {			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -84,12 +64,12 @@ List<String> names;
 			}
 		});
 
-  		
+		spinnerHospital=(Spinner)findViewById(R.id.spinner_hospital);
 		//array adapter for adding string
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.spinner_item_text, jobspec);
 	    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	    //calling nothingclass for setting the default value on spinner
-	    spinnerDoctor.setAdapter( new NothingSelectedSpinnerAdapter(adapter, R.layout.contact_spinner3_row_nothing_selected,this));
+	    spinnerHospital.setAdapter( new NothingSelectedSpinnerAdapter(adapter, R.layout.contact_spinner3_row_nothing_selected,this));
 	
 	  //adding second gender spinner
 	  		genderspinner = (Spinner) findViewById(R.id.Spinner02);
@@ -102,7 +82,7 @@ List<String> names;
        
 	  	    //while(genderspinner.getS)
 	  	    //adding parse
-	  	  spinnerDoctor.setOnItemSelectedListener(new OnItemSelectedListener(){
+	  	  spinnerHospital.setOnItemSelectedListener(new OnItemSelectedListener(){
 
 				@Override
 				public void onItemSelected(AdapterView<?> parent, View view,
@@ -110,54 +90,39 @@ List<String> names;
 					// TODO Auto-generated method stub
 					//Toast.makeText(getApplicationContext(), ""+genderspinner.getSelectedItem(), Toast.LENGTH_LONG).show();
 					
-					String value11 = (String) spinnerDoctor.getSelectedItem();
+					String value11 = (String) spinnerHospital.getSelectedItem();
 					String value22 = (String) genderspinner.getSelectedItem();
-					ParseQuery<ParseObject> query = ParseQuery.getQuery("DoctorsTable");
-					/*if(value22.equals("male" ) || value22.equals("female" ))
-					{
-						query.whereEqualTo("Hospital", value11);
-						query.whereEqualTo("Gender", value22);
-						query.setLimit(1000);
-					}
-					else
-					{*/
-						query.whereEqualTo("Hospital", value11);
-						query.setLimit(1000);
-					//}
-					query.findInBackground(new FindCallback<ParseObject>() {
-						
+					ParseQuery<ParseObject> query = ParseQuery.getQuery("DoctorsTable");				
+					query.whereEqualTo("Hospital", value11);
+					query.setLimit(1000);
+					query.findInBackground(new FindCallback<ParseObject>() {						
 						@Override
 						public void done(List<ParseObject> la,
 								com.parse.ParseException e) {
 							// TODO Auto-generated method stub
-							 if(la!=null){
-								 
+							 if(la!=null)
+							 {								 
 								 for(int i=0;i<la.size();i++)
-									{
-									 String s=la.get(i).getString("Name");
-									 /*if(i==0)
-									 {
-										 names.removeAll(names);
-									 }*/
+								 {
+									 String s=la.get(i).getString("Name");									 
 									 if(i==la.size()-1)
 									 {
 										 check="end";
-										 //la=null;
 										 method_done(check);
 										 break;
-										 }
+									 }
 									 else if(!(names.contains(s)))
 									 {
 										 method_done(s); 
 									 }
-									 };}
-			                  else{//handle the error}
+								  };
+							  }
+			                  else
+			                  {//handle the error}
 			                	  Toast.makeText(getApplicationContext(), "There is no doctor of this category ", Toast.LENGTH_LONG).show();
-			                            }
-							
+			                  }						
 						}
-					});
-					
+					});					
 				}
 
 				@Override
@@ -183,14 +148,12 @@ List<String> names;
 	  	*/    
 	  	  
 	  	    //setting home button. it directs to dashboard
-	  	    button1=(Button)findViewById(R.id.button2);
-			button1.setOnClickListener(new View.OnClickListener() {
-				
+	  	    button1=(Button)findViewById(R.id.buttonHome);
+			button1.setOnClickListener(new View.OnClickListener() {				
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					Intent i=new Intent(Search_doctors.this,DashboardActivity.class);
-					
+					Intent i=new Intent(Search_doctors.this,DashboardActivity.class);					
 					startActivity(i);
 					finish();
 				}
@@ -203,27 +166,7 @@ List<String> names;
 		// Inflate the menu; this adds items to the action bar if it is present.
 		//getMenuInflater().inflate(R.menu.doctors, menu);
 		return true;
-	}
-	public void method_done(String s)
-	{
-		if(s.equals("end"))
-		{
-		  	// Get the string array
-		  	//String[] countries = getResources().getStringArray(R.array.countries_array);
-		  	  		  	  		  	  		  	  		  	  
-	  		  // 	Create the adapter and set it to the AutoCompleteTextView 
-  		  ArrayAdapter<String> nameadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-  		  textView.setAdapter(nameadapter);
-		  	  	  	    	  	    	  	    	  	
-		}
-		else
-		{
-			//Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
-			names.add(s);
-			
-		}					
-   }
-
+	}	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -235,6 +178,25 @@ List<String> names;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	public void method_done(String s)
+	{
+		if(s.equals("end"))
+		{
+		  	// Get the string array
+		  	//String[] countries = getResources().getStringArray(R.array.countries_array);
+		  	  		  	  		  	  		  	  		  	  
+	  		  // 	Create the adapter and set it to the AutoCompleteTextView 
+  		  ArrayAdapter<String> nameadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+  		 doctorName.setAdapter(nameadapter);
+		  	  	  	    	  	    	  	    	  	
+		}
+		else
+		{
+			//Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+			names.add(s);
+			
+		}					
+   }
 
 	
 	public void onBackPressed() {
@@ -264,15 +226,15 @@ List<String> names;
 	public void button_performed()
 	{
 
-		if(genderspinner.getSelectedItem()==null || spinnerDoctor.getSelectedItem()==null )
+		if(genderspinner.getSelectedItem()==null || spinnerHospital.getSelectedItem()==null )
 		{
 			Toast.makeText(getApplicationContext(), "Select All categories", Toast.LENGTH_LONG).show();
 		}
 		else
 		{
 			searchGender=(String)genderspinner.getSelectedItem();
-			searchHospital = (String) spinnerDoctor.getSelectedItem();
-			searchName = textView.getText().toString();			
+			searchHospital = (String) spinnerHospital.getSelectedItem();
+			searchName = doctorName.getText().toString();			
 	      	
 			ParseQuery<ParseObject> query = ParseQuery.getQuery("DoctorsTable");
 			query.whereEqualTo("Gender", searchGender);
@@ -283,7 +245,8 @@ List<String> names;
 				public void done(List<ParseObject> la,
 						com.parse.ParseException e) {
 					// TODO Auto-generated method stub
-					 if(la!=null){
+					 if(la!=null)
+					 {
 						 //startActivity(intent);
 						 if(la.size()==0)
 						 {
@@ -304,7 +267,7 @@ List<String> names;
 					      	startActivity(intent);*/
 						 }
 						
-	                         }
+	                  }
 	                  else{//handle the error}
 	                	  Toast.makeText(getApplicationContext(), "There is no doctor of this category ", Toast.LENGTH_LONG).show();
 	                       }

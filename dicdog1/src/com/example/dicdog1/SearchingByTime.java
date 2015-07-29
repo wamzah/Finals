@@ -152,10 +152,7 @@ public class SearchingByTime extends ActionBarActivity {
 		
   	//adding first job spinner
 		specialityspinner = (Spinner) findViewById(R.id.spinnerSpeciality2);
-		
-		
-  		
-		
+				  	
 	    
 	  //adding second gender spinner
   		genderspinner = (Spinner) findViewById(R.id.genderSpinner);

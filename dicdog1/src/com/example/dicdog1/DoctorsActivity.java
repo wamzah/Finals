@@ -38,7 +38,7 @@ private static ParseObject doctordata;
 private static Intent intent;
 private static String check;
 public static List<String> jobspec; 
-private static Spinner spinner;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,21 +50,22 @@ private static Spinner spinner;
 		
 		
 		//adding first job spinner
-			spinner = (Spinner) findViewById(R.id.spinner1);
+			//spinner = (Spinner) findViewById(R.id.spinner1);
+		    spinnerDoctor=(Spinner)findViewById(R.id.Spinner02);
 			jobspec=new ArrayList<String>();
 			check="";
 
 	  //adding second gender spinner
-	  		Spinner genderspinner = (Spinner) findViewById(R.id.Spinner02);
+	  		spinnerGender = (Spinner) findViewById(R.id.Spinner01);
 	  		String genderspec[]={"male","female"};
 	  		//array adapter for adding string
 	  		ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this,R.layout.spinner2_item_text,genderspec);
 	  	    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	  	    //calling nothingclass for setting the default value on spinner
-	  	    genderspinner.setAdapter( new NothingSelectedSpinnerAdapter(adapter2, R.layout.contact_spinner2_row_nothing_selected,this));
+	  	  spinnerGender.setAdapter( new NothingSelectedSpinnerAdapter(adapter2, R.layout.contact_spinner2_row_nothing_selected,this));
        
-	  	//adding hospital spinner
-	  		Spinner hospitalspinner = (Spinner) findViewById(R.id.Spinner01);
+	  	    //adding hospital spinner
+	  	  	spinnerHospital = (Spinner) findViewById(R.id.spinnerHosp);
 	  		List<String> hospspec=new ArrayList<String>();
 	  		hospspec=Landingpage.hospital_list;
 	      
@@ -72,11 +73,12 @@ private static Spinner spinner;
 	  		ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this,R.layout.spinner3_item_text,hospspec);
 	  	    adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	  	    //calling nothingclass for setting the default value on spinner
-	  	    hospitalspinner.setAdapter( new NothingSelectedSpinnerAdapter(adapter3, R.layout.contact_spinner3_row_nothing_selected,this));
+	  	    spinnerHospital.setAdapter( new NothingSelectedSpinnerAdapter(adapter3, R.layout.contact_spinner3_row_nothing_selected,this));
 	  	    
+	  	//search operation: calling all the spinners 
+			
 	  	    
-	  	    
-	  	    spinnerGender=(Spinner)findViewById(R.id.Spinner02);
+//	  	    spinnerGender=(Spinner)findViewById(R.id.Spinner02);
 	  	  	intent=new Intent(this,DoctorsList.class);
 			//search button
 			button2=(Button)findViewById(R.id.button1);
@@ -90,7 +92,7 @@ private static Spinner spinner;
 			});
 	  	    
 	  	    //setting home button. it directs to dashboard
-	  	  button1=(Button)findViewById(R.id.button2);
+	  	  button1=(Button)findViewById(R.id.buttonHome);
 			button1.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
@@ -100,9 +102,8 @@ private static Spinner spinner;
 					startActivity(i);
 				}
 			});
-			//search operation: calling all the spinners 
-			spinnerDoctor=(Spinner)findViewById(R.id.spinner1);
-			spinnerHospital=(Spinner)findViewById(R.id.Spinner01);
+			
+			//spinnerHospital=(Spinner)findViewById(R.id.Spinner01);
 			spinnerHospital.setOnItemSelectedListener(new OnItemSelectedListener(){
 
 				@Override
@@ -136,13 +137,10 @@ private static Spinner spinner;
 									 };}
 			                  else{//handle the error}
 			                	  //Toast.makeText(getApplicationContext(),"hello yes", Toast.LENGTH_LONG).show();
-			                            }
-							
+			                            }							
 						}
-					});
-					
+					});					
 				}
-
 				@Override
 				public void onNothingSelected(AdapterView<?> parent) {
 					// TODO Auto-generated method stub
@@ -155,25 +153,19 @@ private static Spinner spinner;
 				{
 					if(s.equals("end"))
 					{
-			//array adapter for adding string
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.spinner_item_text, jobspec);
-		    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		    //calling nothingclass for setting the default value on spinner
-		    spinner.setAdapter( new NothingSelectedSpinnerAdapter(adapter, R.layout.contact_spinner_row_nothing_selected,this));
-		 //Toast.makeText(getApplicationContext(), hospital_list.get(0), Toast.LENGTH_LONG).show();
+						//array adapter for adding string
+						ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.spinner_item_text, jobspec);
+					    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+					    //calling nothingclass for setting the default value on spinner
+					    spinnerDoctor.setAdapter( new NothingSelectedSpinnerAdapter(adapter, R.layout.contact_spinner_row_nothing_selected,this));
+					   //Toast.makeText(getApplicationContext(), hospital_list.get(0), Toast.LENGTH_LONG).show();
 					}
 					else
 					{
-						jobspec.add(s);
-						
+						jobspec.add(s);						
 					}					
-					}
-			
-			
-	
-	
-
-	@Override
+				}							
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		//getMenuInflater().inflate(R.menu.doctors, menu);
@@ -190,7 +182,8 @@ private static Spinner spinner;
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
+	}*/
+				
 	//button for extracting data from database and showing on listview
 		public void onBackPressed() {
 	        Intent intent = new Intent(this, DashboardActivity.class);

@@ -2,13 +2,16 @@ package com.example.dicdog1;
 
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -20,7 +23,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -32,6 +34,7 @@ public class SelectedDoctor extends ActionBarActivity {
 
 	private static ImageButton icon;
 	private static Button call;
+	private static Button Schedule;
 	private static TextView main;
 	private static TextView name;
 	private static TextView spec;
@@ -43,6 +46,8 @@ public class SelectedDoctor extends ActionBarActivity {
 	private static Button button1;
 	private static ImageView callimage;
 	private static Doctor doc;
+	private static String schedule;
+	private static String mainSchedule;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +74,11 @@ public class SelectedDoctor extends ActionBarActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				String number = "tel:" + "051 111 644 911";				
+				String number="tel:";
+				if(hospital.getText().equals("MAROOF International Hospital"))
+				{
+					number += "051 111 644 911";				
+				}
 				Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
 			    startActivity(intent);
 			}
@@ -78,11 +87,44 @@ public class SelectedDoctor extends ActionBarActivity {
 		name=(TextView)findViewById(R.id.textView1);
 		spec=(TextView)findViewById(R.id.textView3);		
 		gender=(TextView)findViewById(R.id.TextView02);
-		hospital=(TextView)findViewById(R.id.textView8);
-		timings=(TextView)findViewById(R.id.textView10);
+		hospital=(TextView)findViewById(R.id.textView8);		
 		experience=(TextView)findViewById(R.id.textView9);
 		icon = (ImageButton)findViewById(R.id.ImageButton);
-		icon.setClickable(false);
+		icon.setClickable(false);		
+		Schedule.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			/*	String sched="";
+				schedule=mainSchedule;				
+				//Toast.makeText(getApplicationContext(),"name: "+name.getText()+"\nSched: "+schedule, Toast.LENGTH_LONG).show();
+				while(true)
+				{				
+					if(schedule==null || schedule.equals("end"))
+						break;									
+					if(schedule.contains("/"))
+					{
+						int index=schedule.indexOf("/");
+						String temp="",end="";
+						temp+="\n"+schedule.substring(0, 3);
+						end+=schedule.substring(4, index-1);
+						sched+=temp;
+						sched+="            "+end;
+						//Toast.makeText(getApplicationContext(),"\nSched: "+sched, Toast.LENGTH_LONG).show();
+						if((schedule=schedule.substring(index+1)).equals("/"))
+							break;							
+						//Toast.makeText(getApplicationContext(),"\nSched: "+schedule, Toast.LENGTH_LONG).show();
+					}
+					else
+						break;
+				}
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(SelectedDoctor.this);								
+				alertDialog.setIcon(R.drawable.schedule).setTitle("Schedule")
+	            .setMessage("\n"+sched+"\n\n")	            
+	            .setPositiveButton("Ok", null).show();*/
+			}
+		});
 		button1=(Button)findViewById(R.id.homebitton);
 		button1.setOnClickListener(new View.OnClickListener() {
 			
@@ -105,10 +147,12 @@ public class SelectedDoctor extends ActionBarActivity {
 				// TODO Auto-generated method stub
 				 if(la!=null){
 					 //Toast.makeText(getApplicationContext(),"Name: "+la.get(0).getString("Name"), Toast.LENGTH_LONG).show();
-					 name.setText(la.get(0).getString("Name"));
+					 name.setText("Dr. " + la.get(0).getString("Name"));
 						spec.setText(la.get(0).getString("Job"));
 						gender.setText(la.get(0).getString("Gender"));
 						hospital.setText(la.get(0).getString("Hospital"));
+						mainSchedule=la.get(0).getString("Scehdule");
+						//Toast.makeText(getApplicationContext(),"name: "+la.get(0).getString("Name")+"\nSched: "+la.get(0).getString("Scehdule"), Toast.LENGTH_LONG).show();
 						//timings.setText("9-5");
 						experience.setMovementMethod(new ScrollingMovementMethod());
 						experience.setText(la.get(0).getString("Qualifications"));
@@ -133,13 +177,83 @@ public class SelectedDoctor extends ActionBarActivity {
 									}
 						
 					
-                         });}
+                         });
+						
+						TextView time1=(TextView) findViewById(R.id.time1); 
+						TextView time2=(TextView) findViewById(R.id.time2);
+						TextView time3=(TextView) findViewById(R.id.time3);
+						TextView time4=(TextView) findViewById(R.id.time4);
+						TextView time5=(TextView) findViewById(R.id.time5);
+						TextView time6=(TextView) findViewById(R.id.time6);
+						TextView time7=(TextView) findViewById(R.id.time7);
+						
+						//Setting up schedule table
+						String sched="";
+						schedule=mainSchedule;				
+						//Toast.makeText(getApplicationContext(),"name: "+name.getText()+"\nSched: "+schedule, Toast.LENGTH_LONG).show();
+						while(true)
+						{				
+							if(schedule==null || schedule.equals("end"))
+								break;									
+							if(schedule.contains("/"))
+							{
+								int index=schedule.indexOf("/");
+								String temp="",end="";
+								temp+=schedule.substring(0, 3);
+								end+=schedule.substring(4, index-1);
+								if(temp.equals("Mon"))
+								{
+									time1.setText(end);
+								}
+								else if(temp.equals("Tue"))
+								{
+									time2.setText(end);
+								}
+								else if(temp.equals("Wed"))
+								{
+									time3.setText(end);
+								}
+								else if(temp.equals("Thu"))
+								{
+									time4.setText(end);
+								}
+								else if(temp.equals("Fri"))
+								{
+									time5.setText(end);
+								}
+								else if(temp.equals("Sat"))
+								{
+									time6.setText(end);
+								}
+								else if(temp.equals("Sun"))
+								{
+									time7.setText(end);
+								}
+								sched+=temp;
+								sched+="            "+end;
+								//Toast.makeText(getApplicationContext(),"\nSched: "+sched, Toast.LENGTH_LONG).show();
+								if((schedule=schedule.substring(index+1)).equals("/"))
+									break;							
+								//Toast.makeText(getApplicationContext(),"\nSched: "+schedule, Toast.LENGTH_LONG).show();
+							}
+							else
+								break;
+						}
+				 
+						
+						
+						
+						
+				 
+				 
+				 }
                   else{//handle the error}
                 	  //Toast.makeText(getApplicationContext(),"hello valuesdf", Toast.LENGTH_LONG).show();
                             }
 				
 			}
 		});
+	}
 		
 		/*if(doc.gender.equals("male"))
 		{
@@ -164,7 +278,7 @@ public class SelectedDoctor extends ActionBarActivity {
 		});*/
 		
 		//Toast.makeText(this, doc.getname(), Toast.LENGTH_SHORT).show();
-	}
+	
 
 	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
