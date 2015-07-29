@@ -34,7 +34,7 @@ public class SelectedDoctor extends ActionBarActivity {
 
 	private static ImageButton icon;
 	private static Button call;
-	private static Button Schedule;
+	//private static Button Schedule;
 	private static TextView main;
 	private static TextView name;
 	private static TextView spec;
@@ -91,7 +91,7 @@ public class SelectedDoctor extends ActionBarActivity {
 		experience=(TextView)findViewById(R.id.textView9);
 		icon = (ImageButton)findViewById(R.id.ImageButton);
 		icon.setClickable(false);		
-		Schedule.setOnClickListener(new View.OnClickListener() {
+		/*Schedule.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -122,9 +122,9 @@ public class SelectedDoctor extends ActionBarActivity {
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(SelectedDoctor.this);								
 				alertDialog.setIcon(R.drawable.schedule).setTitle("Schedule")
 	            .setMessage("\n"+sched+"\n\n")	            
-	            .setPositiveButton("Ok", null).show();*/
+	            .setPositiveButton("Ok", null).show();
 			}
-		});
+		});*/
 		button1=(Button)findViewById(R.id.homebitton);
 		button1.setOnClickListener(new View.OnClickListener() {
 			
